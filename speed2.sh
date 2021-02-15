@@ -1,4 +1,5 @@
 #!bin/bash
+# readonly extension='.txt'
 
 readonly input_src_filename="x${1}"
 
@@ -10,7 +11,11 @@ fi
 
 # filenames
 readonly src_file="${input_src_filename#x}"
-readonly output_file="scroll2_${src_file}"
+# readonly output_file="scroll2_${src_file}"
+
+readonly ext="${src_file#*.}"
+readonly without_ext="${src_file%.${ext}}"
+readonly output_file="${without_ext}_scrollx2.${ext}"
 
 # file does not exist:
 if [ ! -f $src_file ]; then
@@ -26,10 +31,12 @@ do
 
     # if contain #SCROLL X.XXX
     if [[ ${line} =~ ^(\#SCROLL\ )([0-9]+(\.[0-9]+)?)$ ]]; then
-        scroll="${BASH_REMATCH[1]}"
+        # if not installed bc
+        # in terminal msys2 do:
+        # $ packman -S bc
         speed2=`echo "${BASH_REMATCH[2]}*2.0" | bc`
 
-        output_line="${scroll}${speed2}"
+        output_line="${BASH_REMATCH[1]}${speed2}"
     fi
 
     if "${is_firstline}"; then
@@ -42,6 +49,8 @@ do
     echo $output_line >> $output_file
 done
 
-# echo `pwd`
+# remove source file
+# rm $src_file
+
 # echo 'success!'
 exit 0
