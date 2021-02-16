@@ -14,8 +14,8 @@ readonly src_file="${input_src_filename#x}"
 # readonly output_file="scroll2_${src_file}"
 
 readonly ext="${src_file#*.}"
-readonly without_ext="${src_file%.${ext}}"
-readonly output_file="${without_ext}_scrollx2.${ext}"
+readonly filename_without_ext="${src_file%.${ext}}"
+readonly output_file="${filename_without_ext}_scrollx2.${ext}"
 
 # file does not exist:
 if [ ! -f $src_file ]; then
@@ -30,13 +30,16 @@ do
     output_line=$line
 
     # if contain #SCROLL X.XXX
-    if [[ ${line} =~ ^(\#SCROLL\ )([0-9]+(\.[0-9]+)?)$ ]]; then
+    # if [[ ${line} =~ ^(\#SCROLL\ )([0-9]+(\.[0-9]+)?)$ ]]; then
+    if [[ ${line} =~ ^(\#SCROLL\ )([0-9]+(\.[0-9]+)?) ]]; then
         # if not installed bc
         # in terminal msys2 do:
         # $ packman -S bc
         speed2=`echo "${BASH_REMATCH[2]}*2.0" | bc`
 
         output_line="${BASH_REMATCH[1]}${speed2}"
+        # echo $line
+        # echo $output_line
     fi
 
     if "${is_firstline}"; then
