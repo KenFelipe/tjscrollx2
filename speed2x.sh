@@ -6,23 +6,32 @@ readonly input_src_filename="x${1}"
 # filename argument is empty:
 if [ $input_src_filename = 'x' ]; then
     echo 'error: Empty filename'
-    exit 0
+    sleep 5; exit 0
 fi
 
 # filenames
 readonly src_file="${input_src_filename#x}"
-# readonly output_file="scroll2_${src_file}"
+
+# show in terminal
+# echo '-------------------------'
+echo "src: ${src_file}"
 
 readonly ext="${src_file#*.}"
-readonly filename_without_ext="${src_file%.${ext}}"
-readonly output_file="${filename_without_ext}_scrollx2.${ext}"
+readonly src_file_without_ext="${src_file%.${ext}}"
+readonly output_file="${src_file_without_ext}_scroll2x.${ext}"
+
+# show in terminal
+# echo '-------------------------'
+# echo "out: ${output_file}"
 
 # file does not exist:
 if [ ! -f $src_file ]; then
     echo "error: No such file ${src_file}"
-    exit 0
+    sleep 5; exit 0
 fi
 
+# ----------------------------------------------------
+i=1
 is_firstline=true
 
 cat $src_file | while read line || [ -n "${line}" ]
@@ -32,6 +41,7 @@ do
     if "${is_firstline}"; then
         echo $output_line > $output_file
 
+        i=`expr $i + 1`
         is_firstline=false
         continue
     fi
@@ -45,21 +55,36 @@ do
         speed2=`echo "${BASH_REMATCH[2]}*2.0" | bc`
 
         output_line="${BASH_REMATCH[1]}${speed2}"
-        # echo $line
-        # echo $output_line
+
+        # show in terminal
+        echo "Line ${i}: ${BASH_REMATCH[0]} -> ${output_line}"
     fi
 
     echo $output_line >> $output_file
 
     # insert #SCROLL 2.0 at the beginning(after the #START)
     if [[ ${line} =~ ^\#START ]]; then
-        # echo ${BASH_REMATCH[0]}
         echo '#SCROLL 2.0' >> $output_file
+
+        # show in terminal
+        echo '------------------------------------------'
+        echo "Line ${i}: insert #SCROLL 2.0 after ${BASH_REMATCH[0]}"
     fi
+
+    i=`expr $i + 1`
 done
 
 # remove source file
 # rm $src_file
+# show in terminal
+echo '------------------------------------------'
+echo "removed \"${src_file##*\\}\""
+echo "created \"${output_file##*\\}\""
+# echo "removed ${src_file##*\\}"
+# echo "created ${output_file##*\\}"
+echo ''
 
-# echo 'success!'
+echo 'Success!!!'
+read -p ""
+
 exit 0
