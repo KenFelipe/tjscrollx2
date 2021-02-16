@@ -75,13 +75,16 @@ do
 done
 
 # remove source file
-# rm $src_file
+echo '------------------------------------------'
+echo "created \"${output_file##*\\}\""
+echo '------------------------------------------'
+rm $src_file
 # show in terminal
 echo '------------------------------------------'
-echo "removed \"${src_file##*\\}\""
-echo "created \"${output_file##*\\}\""
 # echo "removed ${src_file##*\\}"
 # echo "created ${output_file##*\\}"
+# echo "removed \"${src_file##*\\}\""
+
 echo ''
 
 echo 'Success!!!'
