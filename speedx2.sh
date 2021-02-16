@@ -29,6 +29,13 @@ cat $src_file | while read line || [ -n "${line}" ]
 do
     output_line=$line
 
+    if "${is_firstline}"; then
+        echo $output_line > $output_file
+
+        is_firstline=false
+        continue
+    fi
+
     # if contain #SCROLL X.XXX
     # if [[ ${line} =~ ^(\#SCROLL\ )([0-9]+(\.[0-9]+)?)$ ]]; then
     if [[ ${line} =~ ^(\#SCROLL\ )([0-9]+(\.[0-9]+)?) ]]; then
@@ -42,14 +49,13 @@ do
         # echo $output_line
     fi
 
-    if "${is_firstline}"; then
-        echo $output_line > $output_file
-
-        is_firstline=false
-        continue
-    fi
-
     echo $output_line >> $output_file
+
+    # insert #SCROLL 2.0 at the beginning(after the #START)
+    if [[ ${line} =~ ^\#START ]]; then
+        # echo ${BASH_REMATCH[0]}
+        echo '#SCROLL 2.0' >> $output_file
+    fi
 done
 
 # remove source file
