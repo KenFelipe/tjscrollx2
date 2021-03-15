@@ -1,8 +1,11 @@
 #!bin/bash
-# readonly extension='.txt'
+
+# ------------- set x speed ----------------
+readonly x_speed='3.0'
+# ------------------------------------------
+
 
 readonly input_src_filename="x${1}"
-
 # filename argument is empty:
 if [ $input_src_filename = 'x' ]; then
     echo 'error: Empty filename'
@@ -18,7 +21,7 @@ echo "src: ${src_file}"
 
 readonly ext="${src_file#*.}"
 readonly src_file_without_ext="${src_file%.${ext}}"
-readonly output_file="${src_file_without_ext}_scroll2x.${ext}"
+readonly output_file="${src_file_without_ext}_scroll_${x_speed}x.${ext}"
 
 # show in terminal
 # echo '-------------------------'
@@ -52,9 +55,9 @@ do
         # if not installed bc
         # in terminal msys2 do:
         # $ packman -S bc
-        speed2=`echo "${BASH_REMATCH[2]}*2.0" | bc`
+        speed_x_ed=`echo "${BASH_REMATCH[2]}*${x_speed}" | bc`
 
-        output_line="${BASH_REMATCH[1]}${speed2}"
+        output_line="${BASH_REMATCH[1]}${speed_x_ed}"
 
         # show in terminal
         echo "Line ${i}: ${BASH_REMATCH[0]} -> ${output_line}"
@@ -64,11 +67,11 @@ do
 
     # insert #SCROLL 2.0 at the beginning(after the #START)
     if [[ ${line} =~ ^\#START ]]; then
-        echo '#SCROLL 2.0' >> $output_file
+        echo "#SCROLL ${x_speed}" >> $output_file
 
         # show in terminal
         echo '------------------------------------------'
-        echo "Line ${i}: insert #SCROLL 2.0 after ${BASH_REMATCH[0]}"
+        echo "Line ${i}: insert #SCROLL ${x_speed} after ${BASH_REMATCH[0]}"
     fi
 
     i=`expr $i + 1`
